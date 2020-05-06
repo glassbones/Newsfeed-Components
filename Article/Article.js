@@ -1,4 +1,4 @@
-/* This is the data we will be using to create our articles */
+/* This is the data we will be using to create our article components */
 /* Look over this data, then proceed to line 91*/
 const data = [
   {
@@ -85,11 +85,27 @@ const data = [
     thirdParagraph: `Hodor hodor - hodor... Hodor hodor hodor hodor. Hodor. Hodor! Hodor hodor, hodor hodor hodor hodor hodor; hodor hodor? Hodor!
           Hodor hodor, HODOR hodor, hodor hodor?! Hodor! Hodor hodor, HODOR hodor, hodor hodor, hodor, hodor hodor. Hodor, hodor.
           Hodor. Hodor, hodor, hodor. Hodor hodor... Hodor hodor hodor?! Hodor, hodor... Hodor hodor HODOR hodor, hodor hodor. Hodor.`
+  },
+  {
+    title: 'EXTRA CUSTOM TITLE',
+    date: 'Aug 5th, 1919',
+    firstParagraph: `Hodor hodor HODOR! Hodor hodor - hodor, hodor. Hodor hodor... Hodor hodor hodor; hodor hodor. Hodor hodor hodor, hodor, hodor
+          hodor. Hodor, hodor. Hodor. Hodor, hodor - hodor... Hodor hodor hodor; hodor HODOR hodor, hodor hodor?! Hodor hodor, hodor.
+          Hodor hodor hodor hodor hodor! Hodor hodor - HODOR hodor, hodor hodor hodor hodor hodor; hodor hodor? `,
+
+    secondParagraph: `Hodor, hodor. Hodor. Hodor, hodor, hodor. Hodor hodor, hodor. Hodor hodor, hodor, hodor hodor. Hodor! Hodor hodor, hodor;
+          hodor hodor hodor? Hodor, hodor. Hodor. Hodor, hodor - HODOR hodor, hodor hodor hodor! Hodor, hodor. Hodor. Hodor, HODOR
+          hodor, hodor hodor, hodor, hodor hodor. Hodor hodor - hodor - hodor... Hodor hodor hodor hodor hodor hodor hodor?! Hodor
+          hodor - hodor hodor hodor. Hodor. Hodor hodor... Hodor hodor hodor hodor hodor? `,
+
+    thirdParagraph: `Hodor hodor - hodor... Hodor hodor hodor hodor. Hodor. Hodor! Hodor hodor, hodor hodor hodor hodor hodor; hodor hodor? Hodor!
+          Hodor hodor, HODOR hodor, hodor hodor?! Hodor! Hodor hodor, HODOR hodor, hodor hodor, hodor, hodor hodor. Hodor, hodor.
+          Hodor. Hodor, hodor, hodor. Hodor hodor... Hodor hodor hodor?! Hodor, hodor... Hodor hodor HODOR hodor, hodor hodor. Hodor.`
   }
 ];
 
-/* Step 1: Write a component called 'articleMaker' to create an article. You want your component to return markup like the template below: 
-
+/* Step 1: Create a function that creates a component. You will want your component to look like the template below: 
+  
   <div class="article">
     <h2>{title of the article}</h2>
     <p class="date">{date of the article}</p>
@@ -100,14 +116,103 @@ const data = [
   </div>
 
   Hint: You will need to use createElement more than once here!
-
-  Your function should take either an object as its one argument, or 5 separate arguments mapping to each piece of the data object above.
-
-  Step 2: Add an event listener to the expandButton span. This listener should toggle the class 'article-open' on the 'article' div.
-
-  Step 3: Don't forget to return something from your function!
-
-  Step 4: Outside your function, loop over the data. At each iteration you'll use your component to create an article and append it to the DOM inside the 'articles' div.
-
+  Your function should take either an object as it's one argument, or 5 separate arguments mapping to each piece of the data object above.
+  Step 2: Add an event listener to the expandButton span. This event listener should toggle the class 'article-open' on the 'article' div.
+  Step 3: return the entire component.
+  Step 4: Map over the data, creating a component for each oject and add each component to the DOM as children of the 'articles' div.
   Step 5: Add a new article to the array. Make sure it is in the same format as the others. Refresh the page to see the new article.
+
 */
+const d = document;
+const articlesContainer = d.querySelector(`.articles`);
+
+function data2DOM(obj){
+  return obj.map(el => {
+    let arr = Object.values(el).map((el, i) => buildCheck(el, i));
+
+    let expandBtn = build(`span`,`expandButton`);
+    expandBtn.innerHTML = "expand";
+    expandBtn.addEventListener('click', (e)=> {
+      e.target.parentNode.classList.add(`article-open`);
+      e.stopPropagation;
+    });
+    
+    arr.push(expandBtn);
+    arr.push(build(`div`, `article`));
+  
+    return arr;
+  });
+} 
+
+function build(htmlTag, className){
+  let el = d.createElement(`${htmlTag}`);
+  if (className) el.classList.add(`${className}`);
+  return el; 
+}
+
+function buildCheck(el, i){
+  let x = build(`h2`);
+  if (i == 1) x = build(`p`, `date`);
+  if (i >= 2) x = build(`p`);  
+  x.innerHTML = el;
+  return x
+}
+
+data2DOM(data).map((el) => {
+  let parent = articlesContainer.appendChild(el[el.length - 1]);
+  for (item of el){ if (item != parent) parent.appendChild(item) }
+});
+
+
+
+/*
+function mapArtData(arr){
+
+  let articles = arr.map(el => {
+    let article = []
+    // container        .article
+    let art = d.createElement(`div`); 
+    art.classList.add(`article`);
+   // artContainer.appendChild(art);
+    // closeButton      .close
+    //let closeButton = elBuild(`button`, `.close`);
+    // expandButton     .expandButton
+    let expandButton = elBuild(`button`, `.close`);
+    expandButton.addEventListener('click', (e)=> {
+      e.target.parentNode.classList.add(`article-open`);
+      e.stopPropagation;
+    });
+    article.push( art );
+    article.push( expandButton );
+    article.push( elBuild(`h2`).innerHTML = el.title );
+    article.push( elBuild(`p`, `date`).innerHTML = el.date );
+    article.push( elBuild(`p`).innerHTML = el.firstParagraph );
+    article.push( elBuild(`p`).innerHTML = el.secondParagraph );
+    article.push( elBuild(`p`).innerHTML = el.thirdParagraph );
+
+    return article;
+  });
+
+  return articles;
+}
+let articles = mapArtData(data);
+
+console.dir(articles);
+
+*/
+
+
+
+
+
+/*
+
+.createElement
+.appendChild
+.classList.add
+.innerHTML
+
+*/
+
+
+//DOM LOCATION --> <div class="articles"></div> 

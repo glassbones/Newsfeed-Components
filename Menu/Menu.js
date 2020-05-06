@@ -10,7 +10,8 @@ let menuItems = [
 ];
 
 /* 
-  Step 1: Write a component called 'menuMaker' to create a menu like the markup below:
+
+  Step 1: Write a function that will create a menu component as seen below:
 
   <div class="menu">
     <ul>
@@ -18,16 +19,48 @@ let menuItems = [
     </ul>
   </div>
 
-  The 'menuMaker' takes an array as its only argument.
+  
 
-  Step 2: Inside the function, iterate over the array creating a list item <li> element for each item in the array. 
+  The function takes an array as its only argument.
+
+  Step 2: Inside this function, iterate over the array creating a list item <li> element for each item in the array. 
   Add those items to the <ul>
 
   Step 3: Using a DOM selector, select the menu button (the element with a class of 'menu-button') currently on the DOM.
 
   Step 4: add a click event listener to the menu button. When clicked it should toggle the class 'menu--open' on the menu (your div with a 'menu' class).
 
-  Step 5: return your div with a 'menu' class.
+  Step 5: return the menu component.
 
-  Step 6: Use 'menuMaker' to create a menu using the 'menuItems' array, and append the returned markup to the DOM.
+  Step 6: add the menu component to the DOM.
+  
 */
+
+function build2(htmlTag, className){
+  let el = document.createElement(`${htmlTag}`);
+  if (className) el.classList.add(`${className}`);
+  return el; 
+}
+
+function data2Dom2(arr){
+  let menuContainer = build2(`div`,`menu`);
+  let list = build2(`ul`);
+  let els= [];
+
+  arr.forEach(item => {
+    let el = build2('li');
+    el.innerHTML = item;
+    els.push(el);
+  });
+
+  menuContainer.appendChild(list);
+  for (el of els){ list.appendChild(el)}
+
+  let menuBtn = document.querySelector(`.menu-button`);
+  menuBtn.addEventListener('click', e => { menuContainer.classList.toggle('menu--open'); console.log(menuContainer) })
+
+  return menuContainer;
+}
+let menu = data2Dom2(menuItems);
+document.body.appendChild(menu);
+
