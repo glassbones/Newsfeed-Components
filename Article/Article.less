@@ -11,6 +11,7 @@
   height: 50px;
   overflow: hidden;
   box-shadow: 2px 2px 2px lightgrey;
+  transition: 200ms;
 
   h2 {
     font-size: 28px;
@@ -24,9 +25,35 @@
   }
 
   .close {
+    content: ".";
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 3px;
+    background-color: red;
+    border: none;
+    transform: rotate(deg);
+    margin-top: -15px;
+    &::before{
+      content: ".";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color:red;
+      background-color: red;
+      border: none;
+      transform: rotate(45deg);
+    }
+    &::after{
+      content: ".";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: red;
+      background-color: red;
+      border: none;
+      transform: rotate(-45deg);
+    }
+
   }
 
   .expandButton {
@@ -38,12 +65,17 @@
     cursor: pointer;
     transform: translate(-50%);
     background-color: white;
+    transition: 50ms;
+    &:hover{
+      color: black;
+    }
   }
 }
 
 .article-open {
   height: 400px;
 }
+
 
 
 
