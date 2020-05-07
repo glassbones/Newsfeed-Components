@@ -126,93 +126,60 @@ const data = [
 const d = document;
 const articlesContainer = d.querySelector(`.articles`);
 
-function data2DOM(obj){
-  return obj.map(el => {
-    let arr = Object.values(el).map((el, i) => buildCheck(el, i));
-
+function data2DOM(arr){
+  // itterate through array to get objects
+  let comp = arr.map(obj => {
+    // itterate through object to find values and send each value to be processed. //line 145
+    // will return all data as dom elements.
+    let comp = Object.values(obj).map((value, index) => buildCheck(value, index));    
+    // make expand <span> and toggle .article-open on its parent when clicked
     let expandBtn = build(`span`,`expandButton`);
     expandBtn.innerHTML = "expand";
-    expandBtn.addEventListener('click', (e)=> {
-      e.target.parentNode.classList.add(`article-open`);
-      e.stopPropagation;
-    });
-    
-    arr.push(expandBtn);
-    arr.push(build(`div`, `article`));
-  
-    return arr;
+    expandBtn.onclick = () => expandBtn.parentNode.classList.toggle(`article-open`);
+    //add expand <span> and article <div> to the component
+    comp.push(expandBtn);
+    comp.push(build(`div`, `article`));
+    return comp;
   });
+  // assigning childern and attaching elements to the DOM
+  comp.map((array) => {
+    //attaching the last element of each array <div class=article> to the DOM
+    let parent = articlesContainer.appendChild(array[array.length - 1]);
+    //attaching all elements that aren't <div class=article> to <div class=article> 
+    for (el of array){ if (el != parent) parent.appendChild(el) }
+    //stretch
+    let closeBtn = build(`button`, 'close');
+    closeBtn.onclick = () => closeBtn.parentNode.remove();
+    parent.appendChild(closeBtn);
+  });
+  ///////////////////////////////////////////////////////////////
+  //////////////////////lazy functions///////////////////////////
+  ///////////////////////////////////////////////////////////////
+  // creates an element and assigns html tag/class based on index
+  function buildCheck(value, index){
+    let el = build(`h2`);
+    if (index == 1) el = build(`p`, `date`);
+    if (index >= 2) el = build(`p`);
+    //slip in the value then return
+    el.innerHTML = value
+    return el
+  }
+  //this just creates html elements and adds a class if given
+  function build(htmlTag, className){
+    let el = d.createElement(`${htmlTag}`);
+    if (className) el.classList.add(`${className}`);
+    return el; 
+  }
 } 
 
-function build(htmlTag, className){
-  let el = d.createElement(`${htmlTag}`);
-  if (className) el.classList.add(`${className}`);
-  return el; 
-}
-
-function buildCheck(el, i){
-  let x = build(`h2`);
-  if (i == 1) x = build(`p`, `date`);
-  if (i >= 2) x = build(`p`);  
-  x.innerHTML = el;
-  return x
-}
-
-data2DOM(data).map((el) => {
-  let parent = articlesContainer.appendChild(el[el.length - 1]);
-  for (item of el){ if (item != parent) parent.appendChild(item) }
-});
-
-
-
-/*
-function mapArtData(arr){
-
-  let articles = arr.map(el => {
-    let article = []
-    // container        .article
-    let art = d.createElement(`div`); 
-    art.classList.add(`article`);
-   // artContainer.appendChild(art);
-    // closeButton      .close
-    //let closeButton = elBuild(`button`, `.close`);
-    // expandButton     .expandButton
-    let expandButton = elBuild(`button`, `.close`);
-    expandButton.addEventListener('click', (e)=> {
-      e.target.parentNode.classList.add(`article-open`);
-      e.stopPropagation;
-    });
-    article.push( art );
-    article.push( expandButton );
-    article.push( elBuild(`h2`).innerHTML = el.title );
-    article.push( elBuild(`p`, `date`).innerHTML = el.date );
-    article.push( elBuild(`p`).innerHTML = el.firstParagraph );
-    article.push( elBuild(`p`).innerHTML = el.secondParagraph );
-    article.push( elBuild(`p`).innerHTML = el.thirdParagraph );
-
-    return article;
-  });
-
-  return articles;
-}
-let articles = mapArtData(data);
-
-console.dir(articles);
-
-*/
+data2DOM(data);
 
 
 
 
 
-/*
-
-.createElement
-.appendChild
-.classList.add
-.innerHTML
-
-*/
 
 
-//DOM LOCATION --> <div class="articles"></div> 
+
+
+

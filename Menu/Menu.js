@@ -36,31 +36,34 @@ let menuItems = [
   
 */
 
-function build2(htmlTag, className){
-  let el = document.createElement(`${htmlTag}`);
-  if (className) el.classList.add(`${className}`);
-  return el; 
-}
 
-function data2Dom2(arr){
-  let menuContainer = build2(`div`,`menu`);
-  let list = build2(`ul`);
-  let els= [];
 
-  arr.forEach(item => {
-    let el = build2('li');
-    el.innerHTML = item;
-    els.push(el);
-  });
-
-  menuContainer.appendChild(list);
+function data2Dom2(data){
+  //making elements <div class="menu"> and <ul> 
+  let menu = build(`div`,`menu`);
+  let list = build(`ul`);
+  let els = [];
+  //fill array with all data from argument. <li> sample text </li> 
+  for (item of data){
+      let el = build('li');
+      el.innerHTML = item;
+      els.push(el);}
+  //make <div class=menu> a parent of the <ul> and then fill the ul with each <li> 
+  menu.appendChild(list);
   for (el of els){ list.appendChild(el)}
-
-  let menuBtn = document.querySelector(`.menu-button`);
-  menuBtn.addEventListener('click', e => { menuContainer.classList.toggle('menu--open'); console.log(menuContainer) })
-
-  return menuContainer;
+  // find .menu-button and click event to toggle menu display with .menu--open class
+  document.querySelector(`.menu-button`).onclick = ()=> menu.classList.toggle('menu--open');
+  return menu;
+  ///////////////////////////////////////////////////////////////
+  //////////////////////lazy functions///////////////////////////
+  ///////////////////////////////////////////////////////////////
+  function build(htmlTag, className){
+    let el = document.createElement(`${htmlTag}`);
+    if (className) el.classList.add(`${className}`);
+    return el; 
+  }
 }
-let menu = data2Dom2(menuItems);
+
+const menu = data2Dom2(menuItems);
 document.body.appendChild(menu);
 
